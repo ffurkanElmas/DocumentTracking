@@ -1,0 +1,165 @@
+﻿@model DokumanModulu.Entity.DocumentTracking
+@using PagedList;
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "Düzenle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <h2><i class="fa fa-pencil" aria-hidden="true"></i> DÜZENLE</h2>
+    <hr />
+    <div class="container">
+        @using (Html.BeginForm("Edit", "DocumentTracking", FormMethod.Get, new { id = Model.Id }))
+        {
+            <div class="input-group mb-3">
+                <input type="text" name="searchUser" id="searchUserInput" class="form-control" placeholder="Kullanıcı Ara..." value="@ViewBag.SearchUser" style="margin-right: 10px;" />
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-primary rounded" style="margin-right: 10px;">Ara</button>
+                </div>
+            </div>
+        }
+
+        @using (Html.BeginForm("Edit", "DocumentTracking", FormMethod.Get, new { id = Model.Id }))
+        {
+            <div class="input-group-append">
+                <button type="submit" class="btn btn-secondary rounded">Sıfırla</button>
+            </div>
+        }
+    </div>
+
+    <div class="container mt-5">
+        <h4>Dosya Görüntüleme İzni</h4>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>İsim</th>
+                    <th>Soyisim</th>
+                    <th>Telefon Numarası</th>
+                    <th>E-Mail Adresi</th>
+                    <th>Rol</th>
+                    <th>Görüntüleme İzni</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="userTableBody">
+                @foreach (var user in ViewBag.UserList)
+                {
+                    <tr>
+                        <td>@user.Name</td>
+                        <td>@user.Surname</td>
+                        <td>@user.PhoneNumber</td>
+                        <td>@user.Email</td>
+                        <td>@ViewBag.UserRoles[user.Id]</td>
+                        <td class="text-center">
+                            @if (ViewBag.SelectedUsers.Contains(user.Id))
+                            {
+                                <span class="text-success">Var</span>
+                            }
+                            else
+                            {
+                                <span class="text-danger">Yok</span>
+                            }
+                        </td>
+                        <td class="text-center">
+                            @if (ViewBag.SelectedUsers.Contains(user.Id))
+                            {
+                                <button class="btn btn-danger" onclick="updateUserPermission('@user.Id', false)"><i class="fa fa-eye-slash" aria-hidden="true"></i> İzni Kaldır</button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-success" onclick="updateUserPermission('@user.Id', true)"><i class="fa fa-eye" aria-hidden="true"></i> İzin Ver</button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="pagination-container">
+            @Html.PagedListPager((IPagedList)ViewBag.UserList, page => Url.Action("Edit", new { page, id = Model.Id, searchUser = ViewBag.SearchUser }), PagedListRenderOptions.PageNumbersOnly)
+        </div>
+    </div>
+
+    <div class="container mt-5 mb-5 d-flex justify-content-start">
+        @Html.ActionLink("Listeye Dön", "Index", null, new { @class = "btn btn-primary ml-2 back-to-list-btn" })
+    </div>
+
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        function updateUserPermission(userId, allow) {
+            $.ajax({
+                url: '@Url.Action("UpdateUserPermission", "DocumentTracking")',
+                type: 'POST',
+                data: {
+                    documentId: '@Model.Id',
+                    userId: userId,
+                    allow: allow
+                },
+                success: function (response) {
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                }
+            });
+        }
+    </script>
+
+    <style>
+        .pagination li {
+            margin-right: 10px;
+        }
+
+            .pagination li a, .pagination li span {
+                padding: 8px 12px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                margin-right: 5px;
+            }
+
+                .pagination li a:hover, .pagination li span:hover {
+                    background-color: #eee;
+                }
+
+        .pagination .active a, .pagination .active span {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .pagination .disabled span {
+            color: #6c757d;
+        }
+
+        thead th {
+            background-color: #3f3f41;
+            color: white;
+        }
+
+        .container.mt-5.mb-5 .btn-primary.ml-2 {
+            margin-bottom: 20px;
+        }
+
+        .back-to-list-btn {
+            margin-left: 0;
+        }
+
+        .text-success {
+            color: green;
+        }
+
+        .text-danger {
+            color: red;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+    </style>
+</div>
