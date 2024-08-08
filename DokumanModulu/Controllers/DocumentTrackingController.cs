@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Net;
 using System.Web.Mvc;
 using System.Web;
-using System;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using DokumanModulu.Entity;
@@ -12,6 +12,7 @@ using DokumanModulu.Identity;
 using DokumanModulu.Models;
 using System.Linq;
 using PagedList;
+using DokumanModulu.Helpers; // Logger sınıfını kullanmak için ekleyin
 
 namespace DokumanModulu.Controllers
 {
@@ -53,8 +54,8 @@ namespace DokumanModulu.Controllers
         public ActionResult Create()
         {
             var uploadsDir = Server.MapPath("~/Uploads/");
+            var model = new DocumentTracking();
 
-            // Ensure the root uploads directory exists
             if (!Directory.Exists(uploadsDir))
             {
                 Directory.CreateDirectory(uploadsDir);
@@ -63,7 +64,7 @@ namespace DokumanModulu.Controllers
             var directories = Directory.GetDirectories(uploadsDir).Select(Path.GetFileName).ToList();
             ViewBag.Folders = directories;
 
-            return View();
+            return View(model);
         }
 
         [Authorize]
@@ -73,7 +74,6 @@ namespace DokumanModulu.Controllers
         {
             var uploadsRootDir = Server.MapPath("~/Uploads/");
 
-            // Ensure the root uploads directory exists
             if (!Directory.Exists(uploadsRootDir))
             {
                 Directory.CreateDirectory(uploadsRootDir);
@@ -135,12 +135,13 @@ namespace DokumanModulu.Controllers
                 db.Documents.Add(documentTracking);
                 db.SaveChanges();
 
+                Logger.Log("Create", documentTracking.Id.ToString(), "Document");
+
                 return RedirectToAction("Index");
             }
 
             return View(documentTracking);
         }
-
 
         [Authorize(Roles = "admin")]
         [HttpGet]
@@ -189,7 +190,6 @@ namespace DokumanModulu.Controllers
             return View(documentTracking);
         }
 
-
         [Authorize(Roles = "admin")]
         [HttpPost]
         public JsonResult UpdateUserPermission(int documentId, string userId, bool allow)
@@ -223,6 +223,8 @@ namespace DokumanModulu.Controllers
                 db.Entry(documentTracking).State = EntityState.Modified;
                 db.SaveChanges();
 
+                Logger.Log("UpdateUserPermission", documentTracking.Id.ToString(), "Document");
+
                 return Json(new { success = true });
             }
             catch (Exception ex)
@@ -247,6 +249,8 @@ namespace DokumanModulu.Controllers
 
                 db.Documents.Remove(documentTracking);
                 db.SaveChanges();
+
+                Logger.Log("Delete", documentTracking.Id.ToString(), "Document");
             }
             return RedirectToAction("Index");
         }
@@ -287,6 +291,16 @@ namespace DokumanModulu.Controllers
 
             Response.AppendHeader("Content-Disposition", "inline; filename=" + Path.GetFileName(filePath));
             return File(filePath, contentType);
+        }
+
+        public ActionResult DocumentDetails(int id)
+        {
+            var document = db.Documents.Find(id);
+            if (document == null)
+            {
+                return HttpNotFound();
+            }
+            return PartialView("_DocumentDetails", document);
         }
     }
 }

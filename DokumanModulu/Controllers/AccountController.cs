@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
@@ -9,8 +8,10 @@ using Microsoft.Owin.Security;
 using DokumanModulu.Entity;
 using DokumanModulu.Identity;
 using DokumanModulu.Models;
-using System;
+using System.Collections.Generic;
 using PagedList;
+using DokumanModulu.Helpers;
+using System.Net; 
 
 namespace DokumanYuklemeModulu.Controllers
 {
@@ -69,6 +70,8 @@ namespace DokumanYuklemeModulu.Controllers
                     {
                         UserManager.AddToRole(user.Id, model.Role);
                     }
+
+                    Logger.Log("Register", user.Id, "User"); // Loglama
 
                     return RedirectToAction("Index", "Account");
                 }
@@ -155,19 +158,18 @@ namespace DokumanYuklemeModulu.Controllers
                 if (!String.IsNullOrEmpty(searchString))
                 {
                     searchString = searchString.ToLower();
-                    var searchTerms = searchString.Split(' ');
+                    var searchTerms = searchString.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                     users = users.Where(u =>
                         searchTerms.All(term => u.Name.ToLower().Contains(term) || u.Surname.ToLower().Contains(term))
                     ).ToList();
                 }
 
                 ViewBag.UserRoles = userRoles;
-                int pageSize = 5; 
+                int pageSize = 5;
                 int pageNumber = (page ?? 1);
                 return View(users.ToPagedList(pageNumber, pageSize));
             }
         }
-
 
         [Authorize(Roles = "admin")]
         public ActionResult Edit(string id)
@@ -214,6 +216,8 @@ namespace DokumanYuklemeModulu.Controllers
                     IdentityResult result = UserManager.Update(user);
                     if (result.Succeeded)
                     {
+                        Logger.Log("Edit", user.Id, "User"); // Loglama
+
                         return RedirectToAction("Index");
                     }
                     else
@@ -231,12 +235,22 @@ namespace DokumanYuklemeModulu.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(string id)
         {
+            var currentUserId = User.Identity.GetUserId();
             var user = UserManager.FindById(id);
             if (user != null)
             {
                 IdentityResult result = UserManager.Delete(user);
                 if (result.Succeeded)
                 {
+                    Logger.Log("Delete", user.Id, "User"); // Loglama
+
+                    if (currentUserId == id)
+                    {
+                        var authManager = HttpContext.GetOwinContext().Authentication;
+                        authManager.SignOut();
+                        return RedirectToAction("Index", "Home");
+                    }
+
                     return RedirectToAction("Index");
                 }
                 else

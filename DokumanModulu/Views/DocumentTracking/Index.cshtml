@@ -64,7 +64,7 @@
                         </a>
                     </td>
                     <td>
-                        <a href="@Url.Action("ViewFile", new { id = item.Id })" class="btn btn-secondary" title="Görüntüle">
+                        <a href="@Url.Action("ViewFile", new { id = item.Id })" class="btn btn-info" title="Görüntüle" target="_blank">
                             <i class="fa fa-eye" aria-hidden="true"></i>
                         </a>
                         @if (User.IsInRole("admin"))
@@ -137,15 +137,15 @@
 
 <script type="text/javascript">
     $('#deleteModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget) 
-        var documentId = button.data('id') 
+        var button = $(event.relatedTarget)
+        var documentId = button.data('id')
         var modal = $(this)
         modal.find('.modal-footer #deleteDocumentId').val(documentId)
     })
 
     $('#userDetailsModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget) 
-        var userId = button.data('id') 
+        var button = $(event.relatedTarget)
+        var userId = button.data('id')
         var modal = $(this)
         var userDetailsContent = modal.find('#userDetailsContent')
 
@@ -170,32 +170,32 @@
 
 <style>
     .pagination li {
-        margin: 0 5px; 
+        margin: 0 5px;
     }
 
         .pagination li a, .pagination li span {
-            padding: 8px 12px; 
+            padding: 8px 12px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            margin-right: 5px; 
+            margin-right: 5px;
         }
 
             .pagination li a:hover, .pagination li span:hover {
-                background-color: #eee; 
+                background-color: #eee;
             }
 
     .pagination .active a, .pagination .active span {
-        background-color: #007bff; 
-        color: white; 
-        border-color: #007bff; 
+        background-color: #007bff;
+        color: white;
+        border-color: #007bff;
     }
 
     .pagination .disabled span {
-        color: #6c757d; 
+        color: #6c757d;
     }
 
     thead th {
-        background-color: #3f3f41; 
+        background-color: #3f3f41;
         color: white;
     }
 </style>

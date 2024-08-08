@@ -15,5 +15,6 @@ namespace DokumanModulu.Entity
         }
 
         public DbSet<DocumentTracking> Documents { get; set; }
+        public DbSet<Log> Logs { get; set; }
     }
 }

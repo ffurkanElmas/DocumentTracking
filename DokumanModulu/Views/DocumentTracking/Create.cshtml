@@ -58,10 +58,10 @@
                 </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group mb-5 ">
                 <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Kaydet" class="btn btn-success" />
-                    <a href="@Url.Action("Index", "DocumentTracking")" class="btn btn-primary">Listeye Dön</a>
+                    <input type="submit" value="Kaydet" class="btn btn-success mr-2" />
+                    <a href="@Url.Action("Index", "DocumentTracking")" class="btn btn-primary">Geri Dön</a>
                 </div>
             </div>
         </div>
@@ -95,7 +95,7 @@
             if ((selectedFolder === "" && newFolderName === "") || (selectedFolder !== "" && newFolderName !== "")) {
                 e.preventDefault();
                 alert("Yeni klasör adı veya mevcut klasör seçilmelidir. Hem yeni klasör adı hem de mevcut klasör seçilmemelidir.");
-                return false; // Formun gönderilmesini engelle
+                return false;
             }
         });
     });

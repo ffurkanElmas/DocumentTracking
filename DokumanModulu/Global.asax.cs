@@ -16,8 +16,26 @@ namespace DokumanModulu
         {
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+
+            
             Database.SetInitializer(new DataInitializer());
             Database.SetInitializer(new IdentityInitializer());
+
+           
+            InitializeDatabase();
+        }
+
+        private void InitializeDatabase()
+        {
+            using (var context = new IdentityDataContext())
+            {
+                context.Database.Initialize(force: true);
+            }
+
+            using (var context = new DataContext())
+            {
+                context.Database.Initialize(force: true);
+            }
         }
     }
 }

@@ -149,12 +149,15 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\DocumentTrackingController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LogController.cs" />
     <Compile Include="Entity\DataContext.cs" />
     <Compile Include="Entity\DataInitializer.cs" />
     <Compile Include="Entity\DocumentTracking.cs" />
+    <Compile Include="Entity\Log.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\Logger.cs" />
     <Compile Include="Identity\ApplicationRole.cs" />
     <Compile Include="Identity\IdentityDataContext.cs" />
     <Compile Include="Identity\IdentityInitializer.cs" />
@@ -184,6 +187,8 @@
     <Content Include="Views\Account\Index.cshtml" />
     <Content Include="Views\Account\Edit.cshtml" />
     <Content Include="Views\Account\_UserDetails.cshtml" />
+    <Content Include="Views\Log\Index.cshtml" />
+    <Content Include="Views\DocumentTracking\_DocumentDetails.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
