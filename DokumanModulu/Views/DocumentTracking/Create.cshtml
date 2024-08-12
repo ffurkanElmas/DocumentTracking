@@ -17,14 +17,7 @@
             <hr />
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-            <div class="form-group">
-                @Html.Label("Kullanıcı ID", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    <input type="text" class="form-control" value="@currentUserId" readonly />
-                    <input type="hidden" name="CreatedUserId" value="@currentUserId" />
-                    @Html.ValidationMessageFor(model => model.CreatedUserId, "", new { @class = "text-danger" })
-                </div>
-            </div>
+            @Html.Hidden("CreatedUserId", currentUserId)
 
             <div class="form-group">
                 @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })

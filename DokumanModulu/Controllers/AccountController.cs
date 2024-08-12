@@ -11,7 +11,7 @@ using DokumanModulu.Models;
 using System.Collections.Generic;
 using PagedList;
 using DokumanModulu.Helpers;
-using System.Net; 
+using System.Net;
 
 namespace DokumanYuklemeModulu.Controllers
 {
@@ -71,7 +71,7 @@ namespace DokumanYuklemeModulu.Controllers
                         UserManager.AddToRole(user.Id, model.Role);
                     }
 
-                    Logger.Log("Register", user.Id, "User"); // Loglama
+                    Logger.Log("Register", user.Id, "User");
 
                     return RedirectToAction("Index", "Account");
                 }
@@ -216,7 +216,7 @@ namespace DokumanYuklemeModulu.Controllers
                     IdentityResult result = UserManager.Update(user);
                     if (result.Succeeded)
                     {
-                        Logger.Log("Edit", user.Id, "User"); // Loglama
+                        Logger.Log("Edit", user.Id, "User"); 
 
                         return RedirectToAction("Index");
                     }
@@ -242,7 +242,7 @@ namespace DokumanYuklemeModulu.Controllers
                 IdentityResult result = UserManager.Delete(user);
                 if (result.Succeeded)
                 {
-                    Logger.Log("Delete", user.Id, "User"); // Loglama
+                    Logger.Log("Delete", user.Id, "User"); 
 
                     if (currentUserId == id)
                     {

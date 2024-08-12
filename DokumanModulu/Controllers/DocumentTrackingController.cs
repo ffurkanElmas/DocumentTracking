@@ -12,7 +12,7 @@ using DokumanModulu.Identity;
 using DokumanModulu.Models;
 using System.Linq;
 using PagedList;
-using DokumanModulu.Helpers; // Logger sınıfını kullanmak için ekleyin
+using DokumanModulu.Helpers; 
 
 namespace DokumanModulu.Controllers
 {
