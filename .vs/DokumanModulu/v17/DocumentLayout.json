@@ -46,7 +46,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
@@ -62,6 +62,10 @@
               "IsPinned": true
             },
             {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "style.css",
@@ -69,7 +73,7 @@
               "RelativeDocumentMoniker": "DokumanModulu\\theme\\css\\style.css",
               "ToolTip": "C:\\Dosyalar\\C#\\DokumanModulu\\DokumanModulu\\theme\\css\\style.css",
               "RelativeToolTip": "DokumanModulu\\theme\\css\\style.css",
-              "ViewState": "AQIAAAwAAAAAAAAAAAAAABAAAAAAAAAA",
+              "ViewState": "AQIAAAkAAAAAAAAAAAAAACIAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
               "WhenOpened": "2024-08-12T08:25:24.312Z",
               "EditorCaption": ""
