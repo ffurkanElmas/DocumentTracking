@@ -4,14 +4,6 @@ main > .container {
     padding: 60px 15px 0;
 }
 
-.footer {
-    background-color: #f5f5f5;
-}
-
-    .footer > .container {
-        padding-right: 15px;
-        padding-left: 15px;
-    }
 
 code {
     font-size: 80%;
@@ -21,10 +13,6 @@ code {
     
     border-color: black;
     color: white;
-}
-
-#product-price {
-    font-size: 35px;
 }
 
 
@@ -41,11 +29,6 @@ body {
 
 .container {
     flex: 1;
-}
-
-.footer {
-    background-color: #f8f9fa; 
-    border-top: 1px solid #e7e7e7; 
 }
 
 
