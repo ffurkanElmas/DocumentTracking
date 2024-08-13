@@ -71,7 +71,7 @@ namespace DokumanYuklemeModulu.Controllers
                         UserManager.AddToRole(user.Id, model.Role);
                     }
 
-                    Logger.Log("Register", user.Id, "User");
+                    Logger.Log("Kayıt", user.Id, "Kullanıcı"); // Register log'u Türkçeleştirildi
 
                     return RedirectToAction("Index", "Account");
                 }
@@ -216,7 +216,7 @@ namespace DokumanYuklemeModulu.Controllers
                     IdentityResult result = UserManager.Update(user);
                     if (result.Succeeded)
                     {
-                        Logger.Log("Edit", user.Id, "User"); 
+                        Logger.Log("Düzenle", user.Id, "Kullanıcı"); // Edit log'u Türkçeleştirildi
 
                         return RedirectToAction("Index");
                     }
@@ -242,7 +242,7 @@ namespace DokumanYuklemeModulu.Controllers
                 IdentityResult result = UserManager.Delete(user);
                 if (result.Succeeded)
                 {
-                    Logger.Log("Delete", user.Id, "User"); 
+                    Logger.Log("Sil", user.Id, "Kullanıcı"); // Delete log'u Türkçeleştirildi
 
                     if (currentUserId == id)
                     {

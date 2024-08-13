@@ -15,6 +15,7 @@ namespace Staj.Controllers
         {
             var logs = db.Logs.AsQueryable();
 
+            // EntityType ve OperationType değerleri artık Türkçe olduğu için doğrudan filtreleyebiliriz
             if (!string.IsNullOrEmpty(entityType))
             {
                 logs = logs.Where(l => l.EntityType == entityType);
@@ -27,7 +28,8 @@ namespace Staj.Controllers
                 logs = logs.Where(log => searchTerms.All(term =>
                     log.UserId.ToLower().Contains(term) ||
                     log.EntityId.ToLower().Contains(term) ||
-                    log.OperationType.ToLower().Contains(term)
+                    log.OperationType.ToLower().Contains(term) ||
+                    log.EntityType.ToLower().Contains(term) 
                 ));
             }
 

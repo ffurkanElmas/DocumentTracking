@@ -6,7 +6,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-5">
+<div class="container mt-5 mb-5">
     <h2><i class="fa fa-history" aria-hidden="true"></i> İŞLEM GEÇMİŞİ</h2>
     <hr />
 
@@ -19,8 +19,8 @@
                     <div class="input-group-append">
                         <select name="entityType" class="form-control">
                             <option value="">Tüm Türler</option>
-                            <option value="User" @(Request.QueryString["entityType"] == "User" ? "selected" : "")>Kullanıcı</option>
-                            <option value="Document" @(Request.QueryString["entityType"] == "Document" ? "selected" : "")>Doküman</option>
+                            <option value="Kullanıcı" @(Request.QueryString["entityType"] == "Kullanıcı" ? "selected" : "")>Kullanıcı</option>
+                            <option value="Doküman" @(Request.QueryString["entityType"] == "Doküman" ? "selected" : "")>Doküman</option>
                         </select>
                         <button type="submit" class="btn btn-primary rounded ml-2">Ara</button>
                         <button type="button" id="resetButton" class="btn btn-secondary rounded ml-2">Sıfırla</button>
@@ -53,15 +53,15 @@
                     <td>@log.OperationType</td>
                     <td>@log.EntityType</td>
                     <td>
-                        @if (log.EntityType == "User")
+                        @if (log.EntityType == "Kullanıcı")
                         {
-                            <a href="#" class="view-entity-details" data-toggle="modal" data-target="#userDetailsModal" data-id="@log.EntityId" data-type="User">
+                            <a href="#" class="view-entity-details" data-toggle="modal" data-target="#userDetailsModal" data-id="@log.EntityId" data-type="Kullanıcı">
                                 @log.EntityId
                             </a>
                         }
-                        else if (log.EntityType == "Document")
+                        else if (log.EntityType == "Doküman")
                         {
-                            <a href="#" class="view-entity-details" data-toggle="modal" data-target="#documentDetailsModal" data-id="@log.EntityId" data-type="Document">
+                            <a href="#" class="view-entity-details" data-toggle="modal" data-target="#documentDetailsModal" data-id="@log.EntityId" data-type="Doküman">
                                 @log.EntityId
                             </a>
                         }
@@ -211,11 +211,6 @@
 
     .pagination .disabled span {
         color: #6c757d;
-    }
-
-    thead th {
-        background-color: #3f3f41;
-        color: white;
     }
 
     .modal {

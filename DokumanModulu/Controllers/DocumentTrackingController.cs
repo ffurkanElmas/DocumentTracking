@@ -1,18 +1,18 @@
-﻿using System;
+﻿using DokumanModulu.Entity;
+using DokumanModulu.Helpers;
+using DokumanModulu.Identity;
+using DokumanModulu.Models;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Web.Mvc;
 using System.Web;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
-using DokumanModulu.Entity;
-using DokumanModulu.Identity;
-using DokumanModulu.Models;
-using System.Linq;
+using System;
 using PagedList;
-using DokumanModulu.Helpers; 
 
 namespace DokumanModulu.Controllers
 {
@@ -135,7 +135,7 @@ namespace DokumanModulu.Controllers
                 db.Documents.Add(documentTracking);
                 db.SaveChanges();
 
-                Logger.Log("Create", documentTracking.Id.ToString(), "Document");
+                Logger.Log("Oluştur", documentTracking.Id.ToString(), "Doküman");
 
                 return RedirectToAction("Index");
             }
@@ -199,7 +199,7 @@ namespace DokumanModulu.Controllers
                 var documentTracking = db.Documents.Find(documentId);
                 if (documentTracking == null)
                 {
-                    return Json(new { success = false, message = "Document not found." });
+                    return Json(new { success = false, message = "Doküman bulunamadı." });
                 }
 
                 var allowedUsers = documentTracking.AllowedUsers?.Split(',').ToList() ?? new List<string>();
@@ -223,7 +223,7 @@ namespace DokumanModulu.Controllers
                 db.Entry(documentTracking).State = EntityState.Modified;
                 db.SaveChanges();
 
-                Logger.Log("UpdateUserPermission", documentTracking.Id.ToString(), "Document");
+                Logger.Log("Kullanıcı İzni Güncelle", documentTracking.Id.ToString(), "Doküman");
 
                 return Json(new { success = true });
             }
@@ -250,7 +250,7 @@ namespace DokumanModulu.Controllers
                 db.Documents.Remove(documentTracking);
                 db.SaveChanges();
 
-                Logger.Log("Delete", documentTracking.Id.ToString(), "Document");
+                Logger.Log("Sil", documentTracking.Id.ToString(), "Doküman");
             }
             return RedirectToAction("Index");
         }

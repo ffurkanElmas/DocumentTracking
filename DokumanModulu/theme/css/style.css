@@ -1,35 +1,65 @@
-
-
 main > .container {
     padding: 60px 15px 0;
+    margin-bottom: 40px;
 }
-
 
 code {
     font-size: 80%;
 }
 
 .list-group-item.active a {
-    
     border-color: black;
     color: white;
 }
 
-
 html, body {
-    background-color:  whitesmoke;
+    background: #f7f9fb;
     height: 100%;
+    min-height: 100%;
     margin: 0;
 }
 
 body {
     display: flex;
     flex-direction: column;
+    min-height: 100%;
 }
 
 .container {
     flex: 1;
 }
 
+table {
+    background-color: white;
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Tablonun gölgeli olmasýný saðlar */
+    border-radius: 5px; /* Kenarlarý yuvarlar */
+}
 
+    table th,
+    table td {
+        padding: 12px;
+        border: 1px solid #dee2e6;
+    }
 
+    table th {
+        background-color: #393b3d;
+        color: #ffffff;
+    }
+
+    table tr:nth-child(even) {
+        background-color: #e9ecef;
+    }
+
+    table tr:nth-child(odd) {
+        background-color: #ffffff;
+    }
+
+footer {
+    padding: 10px 0;
+    background-color: #dadfe3;
+    text-align: center;
+    margin-top: auto;
+}
