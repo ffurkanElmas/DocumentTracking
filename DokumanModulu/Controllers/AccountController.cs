@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using PagedList;
 using DokumanModulu.Helpers;
 using System.Net;
+using System.Xml.Linq;
 
 namespace DokumanYuklemeModulu.Controllers
 {
@@ -165,6 +166,9 @@ namespace DokumanYuklemeModulu.Controllers
                 }
 
                 ViewBag.UserRoles = userRoles;
+                ViewBag.TotalUsers = users.Count;
+
+
                 int pageSize = 5;
                 int pageNumber = (page ?? 1);
                 return View(users.ToPagedList(pageNumber, pageSize));

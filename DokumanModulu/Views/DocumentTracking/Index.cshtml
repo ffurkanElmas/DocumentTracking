@@ -8,6 +8,10 @@
 <div class="container mt-5 mb-5">
     <h2><i class="fa fa-file-text" aria-hidden="true"></i> DOKÜMAN LİSTESİ</h2>
     <hr />
+    @if (User.IsInRole("admin"))
+    {
+        <p><strong>Toplam Kayıt Sayısı:</strong> @ViewBag.TotalRecords</p>
+    }
     <div class="row mb-3">
         <div class="col-md-6">
             <a href="@Url.Action("Create")" class="btn btn-success rounded">
@@ -15,11 +19,19 @@
             </a>
         </div>
         <div class="col-md-6">
-            @using (Html.BeginForm("Index", "DocumentTracking", FormMethod.Get))
+            @using (Html.BeginForm("Index", "DocumentTracking", FormMethod.Get, new { id = "filterForm" }))
             {
                 <div class="input-group">
                     <input type="text" name="searchString" id="searchInput" class="form-control" placeholder="Ara..." value="@Request.QueryString["searchString"]" />
                     <div class="input-group-append">
+                        <!-- Klasör seçimi için dropdown -->
+                        <select name="selectedFolder" id="selectedFolder" class="form-control">
+                            <option value="">Tüm Klasörler</option>
+                            @foreach (var folder in ViewBag.Folders)
+                            {
+                                <option value="@folder" @(folder == ViewBag.SelectedFolder ? "selected" : "")>@folder</option>
+                            }
+                        </select>
                         <button type="submit" class="btn btn-primary rounded ml-2">Ara</button>
                         <button type="button" id="resetButton" class="btn btn-secondary rounded ml-2">Sıfırla</button>
                     </div>
@@ -67,6 +79,9 @@
                         <a href="@Url.Action("ViewFile", new { id = item.Id })" class="btn btn-info" title="Görüntüle" target="_blank">
                             <i class="fa fa-eye" aria-hidden="true"></i>
                         </a>
+                        <a href="@Url.Action("ViewFile", new { id = item.Id })" class="btn btn-success" title="İndir" download>
+                            <i class="fa fa-download" aria-hidden="true"></i>
+                        </a>
                         @if (User.IsInRole("admin"))
                         {
                             <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-primary" title="Düzenle">
@@ -82,7 +97,7 @@
         </tbody>
     </table>
     <div class="text-center">
-        @Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchString = Request.QueryString["searchString"] }))
+        @Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchString = Request.QueryString["searchString"], selectedFolder = ViewBag.SelectedFolder }))
     </div>
 </div>
 
@@ -164,7 +179,13 @@
 
     $('#resetButton').on('click', function () {
         $('#searchInput').val('');
+        $('select[name="selectedFolder"]').val('');
         window.location.href = '@Url.Action("Index", "DocumentTracking")';
+    });
+
+    // Klasör dropdown listesinde değişiklik olduğunda formu gönder
+    $('#selectedFolder').on('change', function () {
+        $('#filterForm').submit();
     });
 </script>
 
@@ -193,5 +214,4 @@
     .pagination .disabled span {
         color: #6c757d;
     }
-
 </style>

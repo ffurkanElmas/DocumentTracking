@@ -22,7 +22,8 @@ namespace DokumanModulu.Controllers
         private IdentityDataContext identityDb = new IdentityDataContext();
 
         [Authorize]
-        public ActionResult Index(string searchString, int? page)
+        [Authorize]
+        public ActionResult Index(string searchString, string selectedFolder, int? page)
         {
             var currentUserId = User.Identity.GetUserId();
             var userManager = new UserManager<User>(new UserStore<User>(identityDb));
@@ -39,16 +40,31 @@ namespace DokumanModulu.Controllers
                     .Where(d => d.AllowedUsers.Contains(currentUserId));
             }
 
+            // Klasöre göre filtreleme
+            if (!String.IsNullOrEmpty(selectedFolder))
+            {
+                documents = documents.Where(d => d.Path.StartsWith("/Uploads/" + selectedFolder + "/"));
+            }
+
             if (!String.IsNullOrEmpty(searchString))
             {
                 searchString = searchString.ToLower();
                 documents = documents.Where(d => d.Description.ToLower().Contains(searchString));
             }
 
+            // Klasör listesi
+            var uploadsRootDir = Server.MapPath("~/Uploads/");
+            var directories = Directory.GetDirectories(uploadsRootDir).Select(Path.GetFileName).ToList();
+            ViewBag.Folders = directories;
+            ViewBag.SelectedFolder = selectedFolder;
+
+            ViewBag.TotalRecords = documents.Count();
+
             int pageSize = 5;
             int pageNumber = (page ?? 1);
             return View(documents.OrderBy(d => d.CreatedDate).ToPagedList(pageNumber, pageSize));
         }
+
 
         [Authorize]
         public ActionResult Create()

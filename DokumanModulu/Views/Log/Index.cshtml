@@ -12,12 +12,12 @@
 
     <div class="row mb-3">
         <div class="col-md-6">
-            @using (Html.BeginForm("Index", "Log", FormMethod.Get))
+            @using (Html.BeginForm("Index", "Log", FormMethod.Get, new { id = "filterForm" }))
             {
                 <div class="input-group">
                     <input type="text" name="searchString" id="searchInput" class="form-control" placeholder="Ara..." value="@Request.QueryString["searchString"]" />
                     <div class="input-group-append">
-                        <select name="entityType" class="form-control">
+                        <select name="entityType" id="entityType" class="form-control">
                             <option value="">Tüm Türler</option>
                             <option value="Kullanıcı" @(Request.QueryString["entityType"] == "Kullanıcı" ? "selected" : "")>Kullanıcı</option>
                             <option value="Doküman" @(Request.QueryString["entityType"] == "Doküman" ? "selected" : "")>Doküman</option>
@@ -179,6 +179,11 @@
     $('#resetButton').on('click', function () {
         $('#searchInput').val('');
         window.location.href = '@Url.Action("Index", "Log")';
+    });
+
+    // Tür dropdown listesinde değişiklik olduğunda formu gönder
+    $('#entityType').on('change', function () {
+        $('#filterForm').submit();
     });
 
     $('.modal').on('hidden.bs.modal', function (e) {

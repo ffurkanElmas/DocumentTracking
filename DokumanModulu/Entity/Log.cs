@@ -14,5 +14,7 @@ namespace DokumanModulu.Entity
         public string OperationType { get; set; } 
         public string EntityId { get; set; } 
         public string EntityType { get; set; } 
+
+        public string EntityName { get; set; }
     }
 }
