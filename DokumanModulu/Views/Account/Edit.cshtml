@@ -7,6 +7,14 @@
 <div class="container mt-5">
     <h2><i class="fa fa-pencil" aria-hidden="true"></i> DÜZENLE</h2>
     <hr />
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
     @using (Html.BeginForm())
     {
         @Html.AntiForgeryToken()

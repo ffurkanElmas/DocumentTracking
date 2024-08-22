@@ -1,18 +1,26 @@
 ﻿@model PagedList.IPagedList<DokumanModulu.Models.User>
 @using PagedList.Mvc;
+@using Microsoft.AspNet.Identity;
 
 @{
     ViewBag.Title = "Kullanıcı Listesi";
     var userRoles = ViewBag.UserRoles as Dictionary<string, string>;
 }
 
-
 <div class="container mt-5 mb-5">
     <h2><i class="fa fa-users" aria-hidden="true"></i> KULLANICI LİSTESİ</h2>
     <hr />
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
     @if (User.IsInRole("admin"))
     {
-        <p><strong>Toplam Kullanıcı Sayısı:</strong> @ViewBag.TotalUsers</p>
+        <p><strong>Kullanıcı Sayısı:</strong> @ViewBag.TotalUsers</p>
     }
     <div class="row mb-3">
         <div class="col-md-6">
@@ -54,12 +62,18 @@
                     <td>@user.Email</td>
                     <td>@userRoles[user.Id]</td>
                     <td>
-                        <a href="@Url.Action("Edit", new { id = user.Id })" class="btn btn-primary rounded" title="Düzenle">
-                            <i class="fa fa-pencil" aria-hidden="true"></i>
-                        </a>
-                        <button class="btn btn-danger rounded" data-toggle="modal" data-target="#deleteModal" data-id="@user.Id" title="Sil">
-                            <i class="fa fa-trash" aria-hidden="true"></i>
-                        </button>
+                        @if (userRoles[user.Id] == "user" || user.Id == User.Identity.GetUserId())
+                        {
+                            <a href="@Url.Action("Edit", new { id = user.Id })" class="btn btn-primary rounded" title="Düzenle">
+                                <i class="fa fa-pencil" aria-hidden="true"></i>
+                            </a>
+                        }
+                        @if (userRoles[user.Id] == "user" || user.Id == User.Identity.GetUserId())
+                        {
+                            <button class="btn btn-danger rounded" data-toggle="modal" data-target="#deleteModal" data-id="@user.Id" title="Sil">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                            </button>
+                        }
                     </td>
                 </tr>
             }
@@ -113,31 +127,29 @@
     });
 </script>
 
-
 <style>
     .pagination li {
-        margin: 0 5px; 
+        margin: 0 5px;
     }
 
         .pagination li a, .pagination li span {
-            padding: 8px 12px; 
-            border: 1px solid #ddd; 
-            border-radius: 4px; 
-            margin-right: 5px; 
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 5px;
         }
 
             .pagination li a:hover, .pagination li span:hover {
-                background-color: #eee; 
+                background-color: #eee;
             }
 
     .pagination .active a, .pagination .active span {
-        background-color: #007bff; 
-        color: white; 
-        border-color: #007bff; 
+        background-color: #007bff;
+        color: white;
+        border-color: #007bff;
     }
 
     .pagination .disabled span {
-        color: #6c757d; 
+        color: #6c757d;
     }
-
 </style>

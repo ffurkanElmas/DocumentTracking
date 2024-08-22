@@ -10,7 +10,7 @@
     <hr />
     @if (User.IsInRole("admin"))
     {
-        <p><strong>Toplam Kayıt Sayısı:</strong> @ViewBag.TotalRecords</p>
+        <p><strong>Kayıt Sayısı:</strong> @ViewBag.TotalRecords</p>
     }
     <div class="row mb-3">
         <div class="col-md-6">
@@ -21,9 +21,8 @@
         <div class="col-md-6">
             @using (Html.BeginForm("Index", "DocumentTracking", FormMethod.Get, new { id = "filterForm" }))
             {
-                <div class="input-group">
-                    <input type="text" name="searchString" id="searchInput" class="form-control" placeholder="Ara..." value="@Request.QueryString["searchString"]" />
-                    <div class="input-group-append">
+                <div class="row">
+                    <div class="col-md-4">
                         <!-- Klasör seçimi için dropdown -->
                         <select name="selectedFolder" id="selectedFolder" class="form-control">
                             <option value="">Tüm Klasörler</option>
@@ -32,8 +31,15 @@
                                 <option value="@folder" @(folder == ViewBag.SelectedFolder ? "selected" : "")>@folder</option>
                             }
                         </select>
-                        <button type="submit" class="btn btn-primary rounded ml-2">Ara</button>
-                        <button type="button" id="resetButton" class="btn btn-secondary rounded ml-2">Sıfırla</button>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <input type="text" name="searchString" id="searchInput" class="form-control" placeholder="Ara..." value="@Request.QueryString["searchString"]" />
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-primary rounded">Ara</button>
+                            </div>
+                            <button type="button" id="resetButton" class="btn btn-secondary rounded ml-2">Sıfırla</button>
+                        </div>
                     </div>
                 </div>
             }
@@ -213,5 +219,13 @@
 
     .pagination .disabled span {
         color: #6c757d;
+    }
+
+    .modal {
+        z-index: 1050;
+    }
+
+    .modal-backdrop {
+        z-index: 1040;
     }
 </style>

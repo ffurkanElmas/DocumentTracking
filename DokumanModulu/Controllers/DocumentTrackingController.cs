@@ -134,9 +134,15 @@ namespace DokumanModulu.Controllers
                         Directory.CreateDirectory(uploadsDir);
                     }
 
+                    var fullPath = Path.Combine(uploadsDir, fileName);
+                    if (System.IO.File.Exists(fullPath))
+                    {
+                        ModelState.AddModelError("Path", "Aynı isimde bir dosya zaten mevcut.");
+                        return View(documentTracking);
+                    }
+
                     documentTracking.Path = Path.Combine("/Uploads/", SelectedFolder, fileName).Replace("\\", "/");
-                    var path = Path.Combine(uploadsDir, fileName);
-                    file.SaveAs(path);
+                    file.SaveAs(fullPath);
                 }
                 else
                 {
@@ -158,6 +164,7 @@ namespace DokumanModulu.Controllers
 
             return View(documentTracking);
         }
+
 
         [Authorize(Roles = "admin")]
         [HttpGet]

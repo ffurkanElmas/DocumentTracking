@@ -11,16 +11,17 @@ namespace Staj.Controllers
         private DataContext db = new DataContext();
 
         [Authorize(Roles = "admin")]
-        public ActionResult Index(string entityType, string searchString, int? page)
+        public ActionResult Index(string entityType, string searchString, DateTime? startDate, DateTime? endDate, int? page)
         {
             var logs = db.Logs.AsQueryable();
 
-            // EntityType ve OperationType değerleri artık Türkçe olduğu için doğrudan filtreleyebiliriz
+            // EntityType'a göre filtreleme
             if (!string.IsNullOrEmpty(entityType))
             {
                 logs = logs.Where(l => l.EntityType == entityType);
             }
 
+            // SearchString'e göre filtreleme
             if (!string.IsNullOrEmpty(searchString))
             {
                 var searchTerms = searchString.ToLower().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
@@ -29,10 +30,19 @@ namespace Staj.Controllers
                     log.UserId.ToLower().Contains(term) ||
                     log.EntityId.ToLower().Contains(term) ||
                     log.OperationType.ToLower().Contains(term) ||
-                    log.EntityType.ToLower().Contains(term) 
+                    log.EntityType.ToLower().Contains(term)
                 ));
             }
 
+            // Tarih aralığına göre filtreleme
+            if (startDate.HasValue && endDate.HasValue)
+            {
+                // Bitiş tarihini günün sonuna ayarlıyoruz
+                endDate = endDate.Value.AddDays(1).AddTicks(-1);
+                logs = logs.Where(log => log.Timestamp >= startDate && log.Timestamp <= endDate);
+            }
+
+            // Tarihe göre sıralama
             logs = logs.OrderByDescending(l => l.Timestamp);
 
             int pageSize = 10;

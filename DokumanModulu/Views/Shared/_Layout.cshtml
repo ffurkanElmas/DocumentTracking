@@ -53,6 +53,15 @@
             font-weight: bold;
         }
 
+        /* Sadece sol taraftaki aktif menüde alt çizgi olacak */
+        .navbar-custom .navbar-nav.mr-auto .nav-item.active .nav-link {
+            border-bottom: 2px solid white; /* Sol menüde alt çizgi */
+        }
+
+        /* Sağdaki menü öğeleri için alt çizgiyi kaldır */
+        .navbar-custom .navbar-nav.ml-auto .nav-item .nav-link {
+            border-bottom: none; /* Sağ menüde alt çizgi olmasın */
+        }
     </style>
 </head>
 
@@ -68,15 +77,15 @@
                 <ul class="navbar-nav mr-auto">
                     @if (Request.IsAuthenticated)
                     {
-                        <li class="nav-item active">
+                        <li class="nav-item @(Request.RawUrl.Contains("DocumentTracking") ? "active" : "")">
                             <a class="nav-link" href="@Url.Action("Index", "DocumentTracking")"><i class="fa fa-file-text" aria-hidden="true"></i> Dokümanlar</a>
                         </li>
                         if (User.IsInRole("admin"))
                         {
-                            <li class="nav-item active">
+                            <li class="nav-item @(Request.RawUrl.Contains("Account") ? "active" : "")">
                                 <a class="nav-link" href="@Url.Action("Index", "Account")"><i class="fa fa-users" aria-hidden="true"></i> Kullanıcılar</a>
                             </li>
-                            <li class="nav-item active">
+                            <li class="nav-item @(Request.RawUrl.Contains("Log") ? "active" : "")">
                                 <a class="nav-link" href="@Url.Action("Index", "Log")"><i class="fa fa-history" aria-hidden="true"></i> İşlem Geçmişi</a>
                             </li>
                         }
@@ -85,16 +94,16 @@
                 <ul class="navbar-nav ml-auto">
                     @if (Request.IsAuthenticated)
                     {
-                        <li class="nav-item active">
+                        <li class="nav-item">
                             <span class="nav-link"><i class="fa fa-user-circle-o" aria-hidden="true"></i> @User.Identity.Name</span>
                         </li>
-                        <li class="nav-item active">
+                        <li class="nav-item">
                             <a class="nav-link" href="/Account/Logout"><i class="fa fa-sign-out" aria-hidden="true"></i> Çıkış Yap</a>
                         </li>
                     }
                     else
                     {
-                        <li class="nav-item active">
+                        <li class="nav-item">
                             <a class="nav-link" href="/Account/Login"><i class="fa fa-sign-in" aria-hidden="true"></i> Giriş Yap</a>
                         </li>
                     }
@@ -104,7 +113,6 @@
     </nav>
 
     @RenderBody()
-
 
     <footer class="footer mt-auto py-3">
         <div class="container">

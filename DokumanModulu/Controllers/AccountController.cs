@@ -178,12 +178,17 @@ namespace DokumanYuklemeModulu.Controllers
         [Authorize(Roles = "admin")]
         public ActionResult Edit(string id)
         {
-            if (id == null)
+            var currentUserId = User.Identity.GetUserId();
+            var user = UserManager.FindById(id);
+            var userRole = UserManager.GetRoles(user.Id).FirstOrDefault();
+
+            // Prevent admins from editing other admin accounts
+            if (userRole == "admin" && currentUserId != id)
             {
-                return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
+                TempData["ErrorMessage"] = "Başka bir admin hesabını düzenleyemezsiniz!";
+                return RedirectToAction("Index");
             }
 
-            var user = UserManager.FindById(id);
             if (user == null)
             {
                 return HttpNotFound();
@@ -199,40 +204,63 @@ namespace DokumanYuklemeModulu.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(User model, string role)
         {
-            if (ModelState.IsValid)
+            var currentUserId = User.Identity.GetUserId();
+            var user = UserManager.FindById(model.Id);
+            var userRole = UserManager.GetRoles(user.Id).FirstOrDefault();
+
+            // Prevent admins from editing other admin accounts
+            if (userRole == "admin" && currentUserId != model.Id)
             {
-                var user = UserManager.FindById(model.Id);
-                if (user != null)
+                TempData["ErrorMessage"] = "Başka bir admin hesabını düzenleyemezsiniz!";
+                return RedirectToAction("Index");
+            }
+
+            // Check if the user is the last remaining admin and trying to remove admin role
+            if (userRole == "admin" && role != "admin")
+            {
+                var allUsers = UserManager.Users.ToList();
+                var totalAdmins = allUsers.Count(u => UserManager.IsInRole(u.Id, "admin"));
+
+                if (totalAdmins <= 1)
                 {
-                    user.Name = model.Name;
-                    user.Surname = model.Surname;
-                    user.Email = model.Email;
-                    user.PhoneNumber = model.PhoneNumber;
-                    user.UserName = model.Email;
-
-                    var currentRole = UserManager.GetRoles(user.Id).FirstOrDefault();
-                    if (currentRole != role)
-                    {
-                        UserManager.RemoveFromRole(user.Id, currentRole);
-                        UserManager.AddToRole(user.Id, role);
-                    }
-
-                    IdentityResult result = UserManager.Update(user);
-                    if (result.Succeeded)
-                    {
-                        Logger.Log("Düzenle", user.Id, "Kullanıcı"); // Edit log'u Türkçeleştirildi
-
-                        return RedirectToAction("Index");
-                    }
-                    else
-                    {
-                        ModelState.AddModelError("", "Kullanıcı güncelleme hatası!");
-                    }
+                    TempData["ErrorMessage"] = "Sistemde en az bir tane admin olmak zorunda! Bu rol değişikliğini yapamazsınız.";
+                    ViewBag.Roles = new SelectList(RoleManager.Roles.ToList(), "Name", "Name", userRole);
+                    return View(model);
                 }
             }
+
+            if (ModelState.IsValid)
+            {
+                user.Name = model.Name;
+                user.Surname = model.Surname;
+                user.Email = model.Email;
+                user.PhoneNumber = model.PhoneNumber;
+                user.UserName = model.Email;
+
+                if (userRole != role)
+                {
+                    UserManager.RemoveFromRole(user.Id, userRole);
+                    UserManager.AddToRole(user.Id, role);
+                }
+
+                IdentityResult result = UserManager.Update(user);
+                if (result.Succeeded)
+                {
+                    Logger.Log("Düzenle", user.Id, "Kullanıcı");
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Kullanıcı güncelleme hatası!");
+                }
+            }
+
             ViewBag.Roles = new SelectList(RoleManager.Roles.ToList(), "Name", "Name", role);
             return View(model);
         }
+
+
+
 
         [Authorize(Roles = "admin")]
         [HttpPost]
@@ -241,14 +269,38 @@ namespace DokumanYuklemeModulu.Controllers
         {
             var currentUserId = User.Identity.GetUserId();
             var user = UserManager.FindById(id);
+            var userRole = UserManager.GetRoles(user.Id).FirstOrDefault();
+
+            // Check if the user is the last remaining admin
+            if (userRole == "admin")
+            {
+                // Retrieve all users in memory and then filter them
+                var allUsers = UserManager.Users.ToList();
+                var totalAdmins = allUsers.Count(u => UserManager.IsInRole(u.Id, "admin"));
+
+                if (totalAdmins <= 1)
+                {
+                    TempData["ErrorMessage"] = "Sistemde en az bir tane admin olmak zorunda! Bu kullanıcıyı silemezsiniz.";
+                    return RedirectToAction("Index");
+                }
+            }
+
+            // Prevent admins from deleting other admin accounts
+            if (userRole == "admin" && currentUserId != id)
+            {
+                TempData["ErrorMessage"] = "Başka bir admin hesabını silemezsiniz!";
+                return RedirectToAction("Index");
+            }
+
             if (user != null)
             {
                 IdentityResult result = UserManager.Delete(user);
                 if (result.Succeeded)
                 {
-                    Logger.Log("Sil", user.Id, "Kullanıcı"); // Delete log'u Türkçeleştirildi
+                    Logger.Log("Sil", user.Id, "Kullanıcı");
 
-                    if (currentUserId == id)
+                    // If the deleted user was the current logged-in user, log them out
+                    if (id == currentUserId)
                     {
                         var authManager = HttpContext.GetOwinContext().Authentication;
                         authManager.SignOut();
@@ -262,8 +314,13 @@ namespace DokumanYuklemeModulu.Controllers
                     ModelState.AddModelError("", "Kullanıcı silme hatası!");
                 }
             }
+
             return RedirectToAction("Index");
         }
+
+
+
+
 
         [Authorize]
         public ActionResult Details(string id)

@@ -11,19 +11,39 @@
     <hr />
 
     <div class="row mb-3">
-        <div class="col-md-6">
+        <div class="col-md-12">
             @using (Html.BeginForm("Index", "Log", FormMethod.Get, new { id = "filterForm" }))
             {
-                <div class="input-group">
-                    <input type="text" name="searchString" id="searchInput" class="form-control" placeholder="Ara..." value="@Request.QueryString["searchString"]" />
-                    <div class="input-group-append">
-                        <select name="entityType" id="entityType" class="form-control">
-                            <option value="">Tüm Türler</option>
-                            <option value="Kullanıcı" @(Request.QueryString["entityType"] == "Kullanıcı" ? "selected" : "")>Kullanıcı</option>
-                            <option value="Doküman" @(Request.QueryString["entityType"] == "Doküman" ? "selected" : "")>Doküman</option>
-                        </select>
-                        <button type="submit" class="btn btn-primary rounded ml-2">Ara</button>
-                        <button type="button" id="resetButton" class="btn btn-secondary rounded ml-2">Sıfırla</button>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="input-group">
+                            <select name="entityType" id="entityType" class="form-control">
+                                <option value="">Tüm Türler</option>
+                                <option value="Kullanıcı" @(Request.QueryString["entityType"] == "Kullanıcı" ? "selected" : "")>Kullanıcı</option>
+                                <option value="Doküman" @(Request.QueryString["entityType"] == "Doküman" ? "selected" : "")>Doküman</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-md-8">
+                        <!-- Tarih aralığı seçimi -->
+                        <div class="input-group">
+                            <input type="date" name="startDate" id="startDate" class="form-control" value="@Request.QueryString["startDate"]" placeholder="Başlangıç Tarihi" />
+                            <input type="date" name="endDate" id="endDate" class="form-control ml-2" value="@Request.QueryString["endDate"]" placeholder="Bitiş Tarihi" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <!-- Arama metin kutusu ve butonlar -->
+                        <div class="input-group">
+                            <input type="text" name="searchString" id="searchInput" class="form-control" placeholder="Ara..." value="@Request.QueryString["searchString"]" />
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-primary rounded ml-2">Ara</button>
+                                <button type="button" id="resetButton" class="btn btn-secondary rounded ml-2">Sıfırla</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             }
@@ -75,7 +95,7 @@
         </tbody>
     </table>
     <div class="text-center">
-        @Html.PagedListPager(Model, page => Url.Action("Index", new { page, entityType = Request.QueryString["entityType"], searchString = Request.QueryString["searchString"] }))
+        @Html.PagedListPager(Model, page => Url.Action("Index", new { page, entityType = Request.QueryString["entityType"], searchString = Request.QueryString["searchString"], startDate = Request.QueryString["startDate"], endDate = Request.QueryString["endDate"] }))
     </div>
 </div>
 
@@ -178,6 +198,9 @@
 
     $('#resetButton').on('click', function () {
         $('#searchInput').val('');
+        $('#entityType').val('');
+        $('#startDate').val('');
+        $('#endDate').val('');
         window.location.href = '@Url.Action("Index", "Log")';
     });
 
