@@ -40,7 +40,7 @@
                     <th>E-Mail Adresi</th>
                     <th>Rol</th>
                     <th>Görüntüleme İzni</th>
-                    <th></th>
+                    <th>İşlem</th>
                 </tr>
             </thead>
             <tbody id="userTableBody">
@@ -55,11 +55,11 @@
                         <td class="text-center">
                             @if (ViewBag.SelectedUsers.Contains(user.Id))
                             {
-                                <span class="text-success">Var</span>
+                                <span class="text-success"><strong>Var</strong></span>
                             }
                             else
                             {
-                                <span class="text-danger">Yok</span>
+                                <span class="text-danger"><strong>Yok</strong></span>
                             }
                         </td>
                         <td class="text-center">
